@@ -39,6 +39,7 @@ const state = {
   phase: phases.WAITING,
   phaseUntil: 0,
   message: "",
+  messageUntil: 0,
   revealText: "",
   winnerText: "",
   fish: null,
@@ -71,6 +72,7 @@ function resetGame() {
   state.winnerText = "";
   state.phase = phases.START;
   state.message = "开始游戏";
+  state.messageUntil = 0;
   state.revealText = "";
   state.fish = null;
   state.catchPlayer = 0;
@@ -85,6 +87,7 @@ function startRound() {
   state.phaseUntil = now + randomBetween(3000, 12000);
   state.roundStartedAt = now;
   state.message = "等待鱼儿上钩...";
+  state.messageUntil = 0;
   state.revealText = "";
   state.fish = null;
   state.catchPlayer = 0;
@@ -107,12 +110,18 @@ function frame(now) {
 function update(now, dt) {
   waterTick += dt;
 
+  if (state.phase === phases.WAITING && state.messageUntil && now >= state.messageUntil) {
+    state.message = "等待鱼儿上钩...";
+    state.messageUntil = 0;
+  }
+
   if (state.phase === phases.WAITING && now >= state.phaseUntil) {
     state.phase = phases.READY;
     state.fish = rollFish();
     state.fishSeenAt = now;
     state.readyUntil = now + 4000;
     state.message = "现在按！";
+    state.messageUntil = 0;
     state.flashAt = now;
   }
 
@@ -156,6 +165,7 @@ function pressPlayer(player) {
     if (now - state.roundStartedAt <= 500) {
       state.flashAt = now;
       state.message = "刚开局，误触不扣分";
+      state.messageUntil = now + 1200;
       return;
     }
 
@@ -165,6 +175,7 @@ function pressPlayer(player) {
     state.earlyPressed[player] = true;
     state.flashAt = now;
     state.message = `P${player} 抢早了，-1 金币！`;
+    state.messageUntil = now + 1400;
   }
 }
 
@@ -184,6 +195,7 @@ function catchFish(player, now) {
   }
 
   state.message = "鱼跳出来了！";
+  state.messageUntil = 0;
   state.roundDoneAt = now + 2100;
 }
 
