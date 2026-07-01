@@ -435,13 +435,6 @@ function drawButton(x, y, w, h, color, title, sub, earlyPressed) {
   ctx.fill();
   ctx.shadowColor = "transparent";
 
-  ctx.fillStyle = "rgba(255,255,255,0.26)";
-  roundRect(x + 10, y + 10, w - 20, 28, 14);
-  ctx.fill();
-  ctx.strokeStyle = "rgba(255,255,255,0.32)";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
   ctx.fillStyle = "white";
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
